@@ -1,38 +1,31 @@
-	#ifdef GL_FRAGMENT_PRECISION_HIGH
+#ifdef GL_FRAGMENT_PRECISION_HIGH
 precision highp float;
 #else
 precision mediump float;
 #endif
-
+float tf = 10.0;
 uniform float time;
 //uniform int pointerCount;
 //uniform vec3 pointers[10];
 uniform vec2 resolution;
-vec3 arrows[100] ;
+vec3 arrows[10] ;
 vec2 points() {
 	return vec2(0.0);
 	}
 float len(vec3 c) {
-	return max(c. x, max(c. y, c. z)) ;
-	}
-	/*
-vec4 abs() {
-     return abs
-} */
+	return length(c) ;
+}
 void main(void) {
 	float mx = max(resolution.x, resolution.y);
 	float mc = 0.0;
-	vec3 uv = vec3(cos(gl_FragCoord.xy )/ mx,sin( time));
-	//vec3 color = vec3()
-	//	uv,
-	//	0.25 + 0.5 * sin(time));
+	vec3 uv = vec3(cos(gl_FragCoord.xy*6.5/ mx),sin( 9.3*time));
+	arrows[0] = uv;
 	vec3 color0 = uv;
-	vec3 color = color0;
-    for(int i=0; i<100; i++)
-         arrows[i] = abs(color0*(sin(float(i)/10.0)+time)) ;
-	for(int i=0; i<100; i++) {
-		color += cross(uv, arrows[i]) ;
-		}
+	vec3 color;
+    for(int i=0; i<10; i++) {
+         arrows[i] = abs(color0*(sin(float(i)/tf)*time)) ;
+	color += cross(uv, arrows[i]);
+    }
     if(abs(len(color)) > abs(mc))
 			mc = abs(len(color)) ;
 

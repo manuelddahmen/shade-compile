@@ -1,4 +1,4 @@
-				#ifdef GL_FRAGMENT_PRECISION_HIGH
+#ifdef GL_FRAGMENT_PRECISION_HIGH
 precision highp float;
 #else
 precision mediump float;
@@ -16,7 +16,7 @@ void main(void) {
 		uv,
 		0.25 + 0.5 * sin(time));
     for(int i=0; i<100; i++)
-         arrows[i] = vec3(cos(time),cos(time*time+time),
+         arrows[i] = vec3(cos(time),sin(time),
          	cos(time*time*time));
 	for (int n = 0; n < pointerCount; ++n) {
 		vec3 hole = vec3(sin(1.5 + distance(

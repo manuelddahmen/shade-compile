@@ -6,7 +6,8 @@ precision mediump float;
 float tf = 10.0;
 uniform float time;
 uniform vec2 resolution;
-vec3 arrows[16];
+const int M = 4;
+vec3 arrows[M*M];
 float n2 = 4.0;
 float len(vec3 c) {
 	return length(c) ;
@@ -30,13 +31,14 @@ vec3 choose1(vec3 a, vec3 b, vec3 c, int n) {
 	return c;
 }
 vec3 mixCoord(vec3 p) {
-	float s = 456789.56789;
-	float r1 = pow(s, time);
-	int a1 = int(floor(fract(r1) * 3.0))%3;
-	int a2 = int( floor(fract(r1*35.789) * 3.0) )%3;
+	float s = 1.56789;
+	float r1 = s;
+	vec3 p0  = fract(p*r1);
+	int a1 = int(p0. x) ;
+	int a2 =  int(p0.y);
 	if(a1==a2)
 	     a2 ++;
-         int a3 = (a1+a2)%3;
+         int a3 =a1+a2 ;
          if(a1<a2&&a2<a3)
                return p.xyz;
                    if(a2<a1&&a1<a3)
@@ -51,29 +53,32 @@ vec3 mixCoord(vec3 p) {
                return p.zyx;
          return p;
 }
-
+float floatMod(float x, float y) {
+	return float(abs(x) - float(abs(x/y)*y)) ;
+	}
 vec3 arrow(vec2 uv , int i, int m) {
-	return vec3(rotate2d(
+	return vec3(1.0/distance(rotate2d(
 		vec2(
-			((int) (resolution.x) )*i/m,
-			((int) (resolution.y)) *i%m
-		) ,
-	         len(uv),
-		 uv),
-                time) ;
+			((resolution.x) )*floatMod(float(i) , float(M)) *float(M) ,
+		        (resolution.y) *float(i/M)*float(M)) ,
+	         length(uv), uv), uv)) ;
 }
 
 void main(void) {
 	float mx = max(resolution.x, resolution.y);
 	float mc = 0.0;
-	vec2 uv = vec2(gl_FragCoord.xy/mx);
-	for(int i=0; i<16; i++) {
-       	arrows[i] = arrow(uv, i, 16);
-		color += mixCoord(arrows[i]);
-	 // choose1(cross(arrows[i-1], arrows[i]), mix(arrows[i-1], arrows[i], time), arrows[i], 0);
-    }
-    if(abs(length(color)) > abs(mc))
-			mc = abs(len(color)) ;
+	vec2 uv = vec2(gl_FragCoord.xy/mx)*sin(cos(time)) ;
+	vec3 color=  vec3(uv, time) ;
+	float n = 4.0;
+	float m = n*n;
+	int i =int( length(uv) * 16.0) ;
+       arrows[i] = arrow(uv, i, M*M);
+		color += cross(color,
 
-	gl_FragColor = vec4(abs(color/mc) , 1.0);
+
+		arrows[i]) ;
+	//choose11(cross(arrows[i-1], arrows[i]), mix(arrows[i-1], arrows[i], time), arrows[i], 0);
+
+
+	gl_FragColor = vec4(abs(color) , 1.0);
 }
